@@ -3,6 +3,8 @@ import TodoList from "./components/TodoInput";
 import ListItem from "./components/ToItems";
 import "./css/App.css";
 import "normalize.css";
+import "./css/todo.css";
+import "./css/iconfont.css";
 
 class App extends Component {
   constructor(props) {
@@ -65,13 +67,19 @@ class App extends Component {
     let todos = this.state.todoList.map((item, index) => {
       return (
         <li key={index}>
+          <input type="checkbox" className="todoinput" style={{}} />
           <ListItem list={item} />
           {/* 抽离待办列表 */}
           <button
             onClick={() => {
               this.del(index);
             }}
-            style={{ display: "inline-block", fontSize: "10px" }}
+            style={{
+              display: "inline-block",
+              fontSize: "10px",
+              float: "right"
+            }}
+            className="todobutton"
           >
             删除
           </button>
@@ -82,7 +90,7 @@ class App extends Component {
     return (
       <div className="App-header">
         <h1>我的待办</h1>
-        <div className="inputWrapper" />
+        <div className="inputWrapper" className="iconfont icon-icon" />
         <TodoList
           context={this.state.newTodo} //父向子传递 值
           Submit={value => {
@@ -90,7 +98,9 @@ class App extends Component {
           }} //父向子传递传递函数
         />
         {/* 抽离输入框 */}
-        <ol>{todos}</ol>
+        <ol style={{ paddingLeft: "0px", width: "276px", listStyle: "none" }}>
+          {todos}
+        </ol>
       </div>
     );
   }

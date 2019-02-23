@@ -34,6 +34,9 @@ class TodoInput extends Component {
           this.submit(e);
         }}
         type="text"
+        placeholder="请输入待办事项"
+        style={{ textIndent: "1em" }}
+        className="input"
       />
     );
   }

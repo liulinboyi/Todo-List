@@ -1,0 +1,73 @@
+
+
+.todoinput{
+    width: '20px';
+     height: '20px';
+     -webkit-appearance: 'none';
+      appearance: 'none';
+       outline: 'none' ;
+       margin: 3px 3px 3px 4px;
+}
+.input::placeholder {
+    color: #282c34;
+    font-weight: 400;
+}
+.todobutton{
+    width: 40px; /* 宽度 */
+	height: 25px; /* 高度 */
+	border-width: 0px; /* 边框宽度 */
+	border-radius: 3px; /* 边框半径 */
+	background: #1E90FF; /* 背景颜色 */
+	cursor: pointer; /* 鼠标移入按钮范围时出现手势 */
+	outline: none; /* 不显示轮廓线 */
+	font-family: Microsoft YaHei; /* 设置字体 */
+	color: white; /* 字体颜色 */
+	font-size: 17px; /* 字体大小 */
+}
+.todobutton:hover { /* 鼠标移入按钮范围时改变颜色 */
+	background: #5599FF;
+}
+input[type=checkbox],input[type=radio] {
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    vertical-align: center;
+    background: #fff;
+    border: 1px solid #ccc;
+    position: relative;
+}
+
+input[type=checkbox]:checked::after {
+    content: "\2713";
+    display: block;
+    position: absolute;
+    top: -5px;
+    left: -1px;
+    right: 0;
+    bottom: 0;
+    /* width: 20px; */
+    /* height: 20px; */
+    font-size: 35px;
+    line-height: 20px;
+    /* border: 1px solid #ddd; */
+    color: red;
+    /* font-size: 12px; */
+}
+input[type=radio]:checked::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 0;
+    bottom: 0;
+    width: 6px;
+    height: 6px;
+    background-color: red;
+}
+input[type=radio], input[type=radio]:checked::after {
+    border-radius: 50%;
+}
