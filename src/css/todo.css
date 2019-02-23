@@ -1,4 +1,8 @@
-
+.logout{
+    width: 50px!important;
+    height: 36px!important;
+    vertical-align: middle;
+}
 
 .todoinput{
     width: '20px';

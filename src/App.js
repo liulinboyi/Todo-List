@@ -3,11 +3,12 @@ import TodoList from "./components/TodoInput";
 import ListItem from "./components/ToItems";
 // import LearnCloud from "./utils/LearnCloud";
 import UserDialog from "./components/UserDialog";
-import {ownUser} from "./utils/learnCloud";
+import { ownUser, signOut } from "./utils/learnCloud";
 import "./css/App.css";
 import "normalize.css";
 import "./css/todo.css";
 import "./css/iconfont.css";
+import { white } from "ansi-colors";
 // var AV = require('leancloud-storage');
 var AV = require("leancloud-storage/live-query");
 var { Query, User } = AV;
@@ -77,19 +78,21 @@ class App extends Component {
     // console.log(user)
 
     // let tempuser = {id:user.id,...user.attributes}
-    let tempuser = ownUser()
-    console.log(tempuser)
-    this.setState({
-      user:tempuser,
-    },()=>{
-      console.log(this.state.user)
-      if(Object.keys(this.state.user).length !== 0){
-        this.setState({
-          isLogin:true
-        })
+    let tempuser = ownUser();
+    console.log(tempuser);
+    this.setState(
+      {
+        user: tempuser
+      },
+      () => {
+        console.log(this.state.user);
+        if (Object.keys(this.state.user).length !== 0) {
+          this.setState({
+            isLogin: true
+          });
+        }
       }
-      
-    })
+    );
     // var TestObject = AV.Object.extend("TestObject");
     // var testObject = new TestObject();
     // testObject
@@ -99,7 +102,7 @@ class App extends Component {
     //   .then(function(object) {
     //     alert("LeanCloud Rocks!");
     //   });
-    
+
     // let tempuser = getUser
     // console.log(tempuser)
     // this.setState({
@@ -114,6 +117,7 @@ class App extends Component {
     }
   }
   onSingup(user) {
+    //注册
     console.log(user);
     this.setState(
       {
@@ -130,13 +134,45 @@ class App extends Component {
       }
     );
   }
+  signOut() {
+    //登出
+    localStorage.setItem("TodoList", []);
+    signOut();
+    this.setState({
+      user: {},
+      isLogin: false,
+      todoList: []
+    });
+  }
+  onSingin(user) {
+    //登录
+    console.log(user);
+    this.setState(
+      {
+        user: user
+      },
+      () => {
+        this.setState({
+          isLogin: true
+        });
+        localStorage.setItem(
+          this.state.user.id,
+          JSON.stringify(this.state.user)
+        );
+      }
+    );
+    // this.state({})
+  }
   render() {
     let todos = this.state.todoList.map((item, index) => {
       return (
         <li key={index}>
-          <input type="checkbox" onChange={ ()=>{
-            
-          } } className="todoinput" style={{}} />
+          <input
+            type="checkbox"
+            onChange={() => {}}
+            className="todoinput"
+            style={{}}
+          />
           <ListItem list={item} />
           {/* 抽离待办列表 */}
           <button
@@ -160,12 +196,25 @@ class App extends Component {
         onSingup={user => {
           this.onSingup(user);
         }}
+        onSingin={user => {
+          this.onSingin(user);
+        }}
       />
     );
 
     return (
       <div className="App-header">
-        <h1>{this.state.user.username || "我"}的待办</h1>
+        <h1 style={{ color: "white", fontSize: "35px" }}>
+          {this.state.user.username || "我"}的待办
+          {this.state.user.id ? (
+            <button
+              onClick={this.signOut.bind(this)}
+              className="logout todobutton"
+            >
+              登出
+            </button>
+          ) : null}
+        </h1>
         <div className="iconfont icon-icon" />
         <TodoList
           context={this.state.newTodo} //父向子传递 值
