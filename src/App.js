@@ -90,7 +90,7 @@ class App extends Component {
     return (
       <div className="App-header">
         <h1>我的待办</h1>
-        <div className="inputWrapper" className="iconfont icon-icon" />
+        <div className="iconfont icon-icon" />
         <TodoList
           context={this.state.newTodo} //父向子传递 值
           Submit={value => {
