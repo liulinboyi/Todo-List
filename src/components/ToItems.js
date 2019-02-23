@@ -7,7 +7,7 @@ class ToItems extends Component {
     }
     render() {
         return (
-            <div>{ this.props.list.title }</div>
+            <div style={{ display: 'inline-block' }}>{ this.props.list.title }</div>
         );
     }
 }

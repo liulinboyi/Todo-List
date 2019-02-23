@@ -23,13 +23,41 @@ class App extends Component {
       let end = temptodolist.slice(-1)[0];
       console.log(end);
       temptodolist.push({ id: end.id + 1, title: value });
-      this.setState({
-        todoList: temptodolist
-      });
+      this.setState(
+        {
+          todoList: temptodolist
+        },
+        () => {
+          localStorage.setItem("TodoList", JSON.stringify(this.state.todoList));
+        }
+      );
     } else {
       temptodolist.push({ id: 1, title: value }); //如果Todolist没有内容 直接 ID为1 然后push 新的事项
       this.setState({
         todoList: temptodolist
+      });
+    }
+  }
+  del(index) {
+    console.log(index);
+    let tempindex = this.state.todoList;
+    tempindex.splice(index, 1); //删除对应的值
+    this.setState(
+      {
+        todoList: tempindex
+      },
+      () => {
+        //删除后 将新的值存入localStorage
+        localStorage.setItem("TodoList", JSON.stringify(this.state.todoList));
+      }
+    );
+  }
+
+  componentDidMount() {
+    if (localStorage.getItem("TodoList")) {
+      let templist = JSON.parse(localStorage.getItem("TodoList"));
+      this.setState({
+        todoList: templist
       });
     }
   }
@@ -39,6 +67,14 @@ class App extends Component {
         <li key={index}>
           <ListItem list={item} />
           {/* 抽离待办列表 */}
+          <button
+            onClick={() => {
+              this.del(index);
+            }}
+            style={{ display: "inline-block", fontSize: "10px" }}
+          >
+            删除
+          </button>
         </li>
       );
     });
