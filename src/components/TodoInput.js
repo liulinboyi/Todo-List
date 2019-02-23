@@ -6,20 +6,29 @@ class TodoInput extends Component {
     this.state = {};
   }
   submit(e) {
+    //监听 按键事件
     if (e.key === "Enter") {
       console.log("按回车了");
+      if (e.target.value) {
+        //判断输入内容是否为空
+        this.props.Submit.call(this.props, e.target.value);
+      } else {
+        alert("您没有输入任何内容！");
+      }
+
+      e.target.value = "";
     }
   }
-  change(e){
+  change(e) {
+    //监听change事件
     console.log(e.target.value);
-
   }
   render() {
     return (
       <input
         onChange={e => {
           e.persist();
-          this.change(e)
+          this.change(e);
         }}
         onKeyPress={e => {
           this.submit(e);
