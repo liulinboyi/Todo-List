@@ -10,8 +10,8 @@
 
 .App-header {
   background-color: #282c34;
-  /* min-height: 100vh; */
-  min-height: -webkit-fill-available;
+  min-height: 100vh;
+  /* min-height: -webkit-fill-available; */
   min-width: max-content;
   display: flex;
   flex-direction: column;
