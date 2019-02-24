@@ -3,15 +3,15 @@ import TodoList from "./components/TodoInput";
 import ListItem from "./components/ToItems";
 // import LearnCloud from "./utils/LearnCloud";
 import UserDialog from "./components/UserDialog";
-import { ownUser, signOut } from "./utils/learnCloud";
+import { ownUser, signOut, TodoModel } from "./utils/learnCloud";
 import "./css/App.css";
 import "normalize.css";
 import "./css/todo.css";
 import "./css/iconfont.css";
-import { white } from "ansi-colors";
+// import { white } from "ansi-colors";
 // var AV = require('leancloud-storage');
-var AV = require("leancloud-storage/live-query");
-var { Query, User } = AV;
+// var AV = require("leancloud-storage/live-query");
+// var { Query, User } = AV;
 
 class App extends Component {
   constructor(props) {
@@ -22,6 +22,18 @@ class App extends Component {
       user: {},
       isLogin: false
     };
+
+    // let user = ownUser();
+    // console.log(user);
+    // if (user) {
+    //   TodoModel.getByUser(user, todos => {
+    //     let stateCopy = JSON.parse(JSON.stringify(this.state));
+    //     stateCopy.todoList = todos;
+    //     console.log(todos);
+    //     localStorage.setItem("TodoList", JSON.stringify(todos));
+    //     this.setState(stateCopy);
+    //   });
+    // }
   }
   addTodo(value) {
     //添加待办事项
@@ -29,41 +41,89 @@ class App extends Component {
     console.log("添加Todo");
     let temptodolist = this.state.todoList;
     console.log(temptodolist);
+    console.log(temptodolist.length);
     if (temptodolist.length >= 1) {
       //判断todolist的长度 如果Tododist有内容 将ID加1 然后push 新的事项
       let end = temptodolist.slice(-1)[0];
       console.log(end);
       temptodolist.push({ id: end.id + 1, title: value });
+      console.log(temptodolist);
+      let newTodo = {
+        id: end.id + 1,
+        title: value,
+        status: null,
+        deleted: false
+      };
+      TodoModel.create(
+        newTodo,
+        () => {
+          // newTodo.id = id
+          // this.state.todoList.push(newTodo)
+          console.log(newTodo);
+          console.log(this.state.todoList);
+          this.setState(
+            {
+              todoList: temptodolist
+            },
+            () => {
+              localStorage.setItem(
+                "TodoList",
+                JSON.stringify(this.state.todoList)
+              );
+              console.log(this.state.todoList);
+              // LearnCloud(this.state.todoList);
+            }
+          );
+        },
+        error => {
+          console.log(error);
+        }
+
+        // this.setState(
+        //   {
+        //     todoList: temptodolist
+        //   },
+        //   () => {
+        //     localStorage.setItem("TodoList", JSON.stringify(this.state.todoList));
+        //     // LearnCloud(this.state.todoList);
+        //   }
+      );
+    } else {
+      temptodolist.push({ id: 1, title: value }); //如果Todolist没有内容 直接 ID为1 然后push 新的事项
       this.setState(
         {
           todoList: temptodolist
         },
         () => {
           localStorage.setItem("TodoList", JSON.stringify(this.state.todoList));
-          // LearnCloud(this.state.todoList);
+          console.log(this.state.todoList);
         }
       );
-    } else {
-      temptodolist.push({ id: 1, title: value }); //如果Todolist没有内容 直接 ID为1 然后push 新的事项
-      this.setState({
-        todoList: temptodolist
-      });
     }
   }
   del(index) {
     console.log(index);
+    // console.log(todos);
     let tempindex = this.state.todoList;
+    let id = tempindex[index].id;
     tempindex.splice(index, 1); //删除对应的值
-    this.setState(
-      {
-        todoList: tempindex
-      },
-      () => {
-        //删除后 将新的值存入localStorage
-        localStorage.setItem("TodoList", JSON.stringify(this.state.todoList));
-        // LearnCloud(this.state.todoList);
-      }
-    );
+    console.log(id);
+    TodoModel.destroy(id, () => {
+      // todos.deleted = true;//删除
+      // console.log(todos);
+      this.setState(
+        {
+          todoList: tempindex
+        },
+        () => {
+          //删除后 将新的值存入localStorage
+          localStorage.setItem("TodoList", JSON.stringify(this.state.todoList));
+          // LearnCloud(this.state.todoList);
+        }
+      );
+      // this.state.todoList[index].deleted = true
+      // this.setState(this.state)
+    });
   }
 
   componentDidMount() {
@@ -115,6 +175,21 @@ class App extends Component {
         todoList: templist
       });
     }
+    this.getTodolist(); //组件挂载就加载待办列表数据
+  }
+  getTodolist() {
+    //加载待办事项
+    let user = ownUser();
+    console.log(user);
+    if (user) {
+      TodoModel.getByUser(user, todos => {
+        let stateCopy = JSON.parse(JSON.stringify(this.state));
+        stateCopy.todoList = todos;
+        console.log(todos);
+        localStorage.setItem("TodoList", JSON.stringify(todos));
+        this.setState(stateCopy);
+      });
+    }
   }
   onSingup(user) {
     //注册
@@ -155,10 +230,11 @@ class App extends Component {
         this.setState({
           isLogin: true
         });
-        localStorage.setItem(
-          this.state.user.id,
-          JSON.stringify(this.state.user)
-        );
+        this.getTodolist();
+        // localStorage.setItem(
+        //   this.state.user.id,
+        //   JSON.stringify(this.state.user)
+        // );
       }
     );
     // this.state({})
@@ -169,7 +245,39 @@ class App extends Component {
         <li key={index}>
           <input
             type="checkbox"
-            onChange={() => {}}
+            checked={item.deleted}
+            onChange={() => {
+              let tempselect = this.state.todoList;
+              tempselect[index].deleted = !tempselect[index].deleted;
+              TodoModel.update(
+                tempselect[index],
+                () => {//修改成功
+                  // this.setState(this.state);
+                  this.setState(
+                    {
+                      todoList: tempselect
+                    },
+                    () => {
+                      console.log(this.state.todoList);
+                    }
+                  );
+                },
+                error => {//修改失败
+                  console.log("修改错误");
+                  // todo.status = oldStatus;
+                  // this.setState(this.state);
+                }
+              );
+              // this.setState(
+              //   {
+              //     todoList: tempselect
+              //   },
+              //   () => {
+              //     console.log(this.state.todoList);
+
+              //   }
+              // );
+            }}
             className="todoinput"
             style={{}}
           />
