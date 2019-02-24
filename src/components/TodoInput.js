@@ -35,7 +35,7 @@ class TodoInput extends Component {
         }}
         type="text"
         placeholder="请输入待办事项"
-        style={{ textIndent: "1em",fontSize: '95%' }}
+        style={{ textIndent: "1em", width: '276px', height: '29px', fontSize: '20px' }}
         className="input"
       />
     );
