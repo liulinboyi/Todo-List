@@ -25,6 +25,5 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "homepage": "https://liulinboyi.github.io/Todo-List/build"
+  ]
 }

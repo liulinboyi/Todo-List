@@ -22,18 +22,6 @@ class App extends Component {
       user: {},
       isLogin: false
     };
-
-    // let user = ownUser();
-    // console.log(user);
-    // if (user) {
-    //   TodoModel.getByUser(user, todos => {
-    //     let stateCopy = JSON.parse(JSON.stringify(this.state));
-    //     stateCopy.todoList = todos;
-    //     console.log(todos);
-    //     localStorage.setItem("TodoList", JSON.stringify(todos));
-    //     this.setState(stateCopy);
-    //   });
-    // }
   }
   addTodo(value) {
     //添加待办事项
@@ -57,8 +45,6 @@ class App extends Component {
       TodoModel.create(
         newTodo,
         () => {
-          // newTodo.id = id
-          // this.state.todoList.push(newTodo)
           console.log(newTodo);
           console.log(this.state.todoList);
           this.setState(
@@ -71,7 +57,7 @@ class App extends Component {
                 JSON.stringify(this.state.todoList)
               );
               console.log(this.state.todoList);
-              // LearnCloud(this.state.todoList);
+  
             }
           );
         },
@@ -79,26 +65,43 @@ class App extends Component {
           console.log(error);
         }
 
-        // this.setState(
-        //   {
-        //     todoList: temptodolist
-        //   },
-        //   () => {
-        //     localStorage.setItem("TodoList", JSON.stringify(this.state.todoList));
-        //     // LearnCloud(this.state.todoList);
-        //   }
       );
     } else {
-      temptodolist.push({ id: 1, title: value }); //如果Todolist没有内容 直接 ID为1 然后push 新的事项
-      this.setState(
-        {
-          todoList: temptodolist
-        },
+      temptodolist.push({ id: 1,title:value,status:null,deleted:false }); //如果Todolist没有内容 直接 ID为1 然后push 新的事项
+      let newTodo = {
+        id: 1,
+        title: value,
+        status: null,
+        deleted: false
+      }//上传数据需要是一个对象。
+      TodoModel.create(
+        newTodo,
         () => {
-          localStorage.setItem("TodoList", JSON.stringify(this.state.todoList));
+
+          console.log(newTodo);
           console.log(this.state.todoList);
+          this.setState(
+            {
+              todoList: temptodolist
+            },
+            () => {
+              localStorage.setItem(
+                "TodoList",
+                JSON.stringify(this.state.todoList)
+              );
+              console.log(this.state.todoList);
+         
+            }
+          );
+        },
+        error => {
+          console.log(error);
         }
+
+
       );
+
+
     }
   }
   del(index) {
@@ -109,8 +112,7 @@ class App extends Component {
     tempindex.splice(index, 1); //删除对应的值
     console.log(id);
     TodoModel.destroy(id, () => {
-      // todos.deleted = true;//删除
-      // console.log(todos);
+    
       this.setState(
         {
           todoList: tempindex
@@ -121,23 +123,12 @@ class App extends Component {
           // LearnCloud(this.state.todoList);
         }
       );
-      // this.state.todoList[index].deleted = true
-      // this.setState(this.state)
+    
     });
   }
 
   componentDidMount() {
-    // var APP_ID = "yf5B2o3sR3L2IVJStNOGE8CI-gzGzoHsz";
-    // var APP_KEY = "0CNlpdYYiITG4csI3v1wyIHC";
 
-    // AV.init({
-    //   appId: APP_ID,
-    //   appKey: APP_KEY
-    // });
-    // let user = AV.User.current();
-    // console.log(user)
-
-    // let tempuser = {id:user.id,...user.attributes}
     let tempuser = ownUser();
     console.log(tempuser);
     this.setState(
@@ -153,21 +144,7 @@ class App extends Component {
         }
       }
     );
-    // var TestObject = AV.Object.extend("TestObject");
-    // var testObject = new TestObject();
-    // testObject
-    //   .save({
-    //     words: "Hello World!"
-    //   })
-    //   .then(function(object) {
-    //     alert("LeanCloud Rocks!");
-    //   });
 
-    // let tempuser = getUser
-    // console.log(tempuser)
-    // this.setState({
-    //   user:tempuser
-    // })
 
     if (localStorage.getItem("TodoList")) {
       let templist = JSON.parse(localStorage.getItem("TodoList"));
@@ -231,13 +208,10 @@ class App extends Component {
           isLogin: true
         });
         this.getTodolist();
-        // localStorage.setItem(
-        //   this.state.user.id,
-        //   JSON.stringify(this.state.user)
-        // );
+
       }
     );
-    // this.state({})
+
   }
   render() {
     let todos = this.state.todoList.map((item, index) => {
@@ -264,19 +238,10 @@ class App extends Component {
                 },
                 error => {//修改失败
                   console.log("修改错误");
-                  // todo.status = oldStatus;
-                  // this.setState(this.state);
+                 
                 }
               );
-              // this.setState(
-              //   {
-              //     todoList: tempselect
-              //   },
-              //   () => {
-              //     console.log(this.state.todoList);
-
-              //   }
-              // );
+          
             }}
             className="todoinput"
             style={{}}
