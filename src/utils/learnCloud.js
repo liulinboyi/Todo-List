@@ -100,6 +100,7 @@ export const TodoModel = {
 
     todo.save().then(
       function(response) {
+        console.log("存储成功后返回的id",response.id)
         successFn.call(null, response.id);
       },
       function(error) {

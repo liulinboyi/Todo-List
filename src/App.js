@@ -34,19 +34,25 @@ class App extends Component {
       //判断todolist的长度 如果Tododist有内容 将ID加1 然后push 新的事项
       let end = temptodolist.slice(-1)[0];
       console.log(end);
-      temptodolist.push({ id: end.id + 1, title: value });
-      console.log(temptodolist);
+      
+      console.log("push之后 temptodolist",temptodolist);
       let newTodo = {
-        id: end.id + 1,
+        // id: end.id + 1,
         title: value,
         status: null,
         deleted: false
       };
       TodoModel.create(
         newTodo,
-        () => {
+        (ObjId) => {
           console.log(newTodo);
           console.log(this.state.todoList);
+          temptodolist.push({
+            id: ObjId,
+            title: value,
+            status: null,
+            deleted: false
+           });
           this.setState(
             {
               todoList: temptodolist
@@ -67,17 +73,17 @@ class App extends Component {
 
       );
     } else {
-      temptodolist.push({ id: 1,title:value,status:null,deleted:false }); //如果Todolist没有内容 直接 ID为1 然后push 新的事项
+      
       let newTodo = {
-        id: 1,
+        // id: 1,
         title: value,
         status: null,
         deleted: false
       }//上传数据需要是一个对象。
       TodoModel.create(
         newTodo,
-        () => {
-
+        (ObjId) => {
+          temptodolist.push({ id: ObjId,title:value,status:null,deleted:false }); //如果Todolist没有内容 直接 ID为ObjId 然后push 新的事项
           console.log(newTodo);
           console.log(this.state.todoList);
           this.setState(
